@@ -21,47 +21,37 @@ bool TouchTest::init()
 		return false;
 	}
 
-	// Beginning label, set to middle
-	labelTouchInfo = Label::createWithSystemFont("Touch to begin", "Arial", 25);
-	labelTouchInfo->setPosition(Vec2(
-		Director::getInstance()->getVisibleSize().width / 2,
-		Director::getInstance()->getVisibleSize().height / 2
-	));
+	// Create sprite in center
+	auto sprite = Sprite::create("flcl.jpg");
+	sprite->setPosition(Vec2(Director::getInstance()->getVisibleSize().width / 2, 
+		Director::getInstance()->getVisibleSize().height / 2));
 
-	// Create touch listener and bind callbacks
+	// Add touch listener event
 	auto touchListener = EventListenerTouchOneByOne::create();
+	touchListener->onTouchBegan = [](Touch* touch, Event* event) -> bool {
+		auto bounds = event->getCurrentTarget()->getBoundingBox();
 
-	touchListener->onTouchBegan = CC_CALLBACK_2(TouchTest::onTouchBegan, this);
-	touchListener->onTouchEnded = CC_CALLBACK_2(TouchTest::onTouchEnded, this);
-	touchListener->onTouchMoved = CC_CALLBACK_2(TouchTest::onTouchMoved, this);
-	touchListener->onTouchCancelled = CC_CALLBACK_2(TouchTest::onTouchCancelled, this);
+		// Print info
+		if (bounds.containsPoint(touch->getLocation())) {
+			std::stringstream touchDetails;
+			touchDetails << "Touched at OpenGL coords: " <<
+				touch->getLocation().x << ", " << touch->getLocation().y << std::endl <<
+				"Touched at UI coords: " <<
+				touch->getLocationInView().x << ", " << touch->getLocationInView().y << std::endl <<
+				"Touched at Local coords: " <<
+				event->getCurrentTarget()->convertToNodeSpace(touch->getLocation()).x << ", " <<
+				event->getCurrentTarget()->convertToNodeSpace(touch->getLocation()).y << std::endl <<
+				"Touch moved by: " << touch->getDelta().x << ", " << touch->getDelta().y;
+			
+			MessageBox(touchDetails.str().c_str(), "Touch Info");
+		}
 
-	_eventDispatcher->addEventListenerWithSceneGraphPriority(touchListener, this);
+		return true;
+	};
 
-	// Parent scene to label
-	this->addChild(labelTouchInfo);
+	// Register touch listener and parent scene to sprite
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(touchListener, sprite);
+	this->addChild(sprite, 0);
 
 	return true;
-}
-
-bool TouchTest::onTouchBegan(Touch* touch, Event* event)
-{
-	labelTouchInfo->setPosition(touch->getLocation());
-	labelTouchInfo->setString("Touched Here");
-	return true;
-}
-
-void TouchTest::onTouchEnded(Touch* touch, Event* event)
-{
-	cocos2d::log("Touch End");
-}
-
-void TouchTest::onTouchMoved(Touch* touch, Event* event)
-{
-	cocos2d::log("Touch Moved");
-}
-
-void TouchTest::onTouchCancelled(Touch* touch, Event* event)
-{
-	cocos2d::log("Touch Cancelled");
 }
