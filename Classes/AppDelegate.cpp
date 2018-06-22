@@ -1,6 +1,8 @@
 #include "AppDelegate.h"
+
 #include "HelloWorldScene.h"
 #include "GraphicsTestScene.h"
+#include "TouchTestScene.h"
 
 USING_NS_CC;
 
@@ -14,13 +16,12 @@ bool AppDelegate::applicationDidFinishLaunching()
 	auto director = Director::getInstance();
 	auto glView = director->getOpenGLView();
 	if (!glView) {
-		glView = GLViewImpl::create("GraphicsTest");
-		glView->setFrameSize(640, 480);
+		glView = GLViewImpl::create("Cocos2dTest");
 		director->setOpenGLView(glView);
 	}
 
 	// Setup scene
-	auto scene = GraphicsTest::createScene();
+	auto scene = TouchTest::createScene();
 	director->runWithScene(scene);
 
 	return true;
