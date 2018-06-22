@@ -3,6 +3,7 @@
 #include "HelloWorldScene.h"
 #include "GraphicsTestScene.h"
 #include "TouchTestScene.h"
+#include "MultiTouchTestScene.h"
 
 USING_NS_CC;
 
@@ -21,7 +22,7 @@ bool AppDelegate::applicationDidFinishLaunching()
 	}
 
 	// Setup scene
-	auto scene = TouchTest::createScene();
+	auto scene = MultiTouchTest::createScene();
 	director->runWithScene(scene);
 
 	return true;
